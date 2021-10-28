@@ -1,6 +1,16 @@
 // @ts-ignore
 /* eslint-disable */
-import { request } from 'umi';
+import { extend } from 'umi-request';
+
+const request = extend({
+  prefix: 'http://13.245.39.119:2018',
+  timeout: 10000,
+  headers: {
+    'Access-Control-Request-Headers': 'Bearer',
+    "lang":"zh_cn",
+    "Accept":"application/json, text/plain, */*"
+  },
+});
 
 
 /** 获取当前的用户 GET /api/currentUser */
@@ -23,14 +33,13 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request<API.LoginResult>('/security/login', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
-    ...(options || {}),
+    params: body,
+    ...(options),
   });
+ 
+  
 }
 
 /** 此处后端没有提供注释 GET /api/notices */
@@ -89,7 +98,7 @@ export async function removeRule(options?: { [key: string]: any }) {
 
 /** 删除规则 DELETE /api/rule */
 export async function getgetVerifyCode(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('http://13.245.39.119:2018/v2/api-docs/security/getVerifyCode', {
+  return request<Record<string, any>>('/security/getVerifyCode', {
     method: "get",
   });
 }

@@ -7,17 +7,18 @@ import {
   WeiboCircleOutlined,
 } from '@ant-design/icons';
 import { Alert, Button, Col, Input, message, Row, Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ProFormCaptcha, ProFormCheckbox, ProFormText, LoginForm } from '@ant-design/pro-form';
 import { useIntl, history, FormattedMessage, SelectLang, useModel } from 'umi';
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
+import { login, getgetVerifyCode } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 
 import styles from './index.less';
 import FormItem from 'antd/lib/form/FormItem';
 
 const LoginMessage: React.FC<{
+
   content: string;
 }> = ({ content }) => (
   <Alert
@@ -31,8 +32,11 @@ const LoginMessage: React.FC<{
 );
 
 const Login: React.FC = () => {
-  const [count, setCount]: [number, any] = useState(0);
-  let interval: number | undefined;
+
+
+
+  const [verifyKey, stecode] = useState("");
+  const [img, steimg] = useState("")
 
 
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
@@ -41,17 +45,22 @@ const Login: React.FC = () => {
 
   const intl = useIntl();
 
-  const onGetCaptcha = () => {
-    let counts = 59;
-    setCount(counts);
-    interval = window.setInterval(() => {
-      counts -= 1;
-      setCount(counts);
-      if (counts === 0) {
-        clearInterval(interval);
-      }
-    }, 1000);
-  };
+
+
+  useEffect(() => {
+    VerificationCode()
+    return () => {
+
+    }
+  }, [])
+
+  // 点击图片
+  const VerificationCode = async () => {
+    const msg=await getgetVerifyCode()
+    steimg(msg.data.captcha)
+    stecode(msg.data.verify)
+    
+  }
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -64,9 +73,12 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async (values: API.LoginParams) => {
+    values.verifyKey=verifyKey//添加
+    console.log(values);
+    
     try {
       // 登录
-      const msg = await login({ ...values, type });
+      const msg = await login(values);
       if (msg.status === 'ok') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
@@ -81,7 +93,7 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       }
-      console.log(msg);
+      
       // 如果失败去设置用户错误信息
       setUserLoginState(msg);
     } catch (error) {
@@ -149,7 +161,7 @@ const Login: React.FC = () => {
           {type === 'account' && (
             <>
               <ProFormText
-                name="username"
+                name="userName"
                 fieldProps={{
                   size: 'large',
                   prefix: <UserOutlined className={styles.prefixIcon} />,
@@ -170,31 +182,7 @@ const Login: React.FC = () => {
                   },
                 ]}
               />
-              <Row gutter={8}>
-                <Col span={16}>
-                  <FormItem
-                    name="captcha"
-                    rules={[
-                      {
-                        required: true,
-                        message: '请输入验证码!',
-                      },
-                    ]}
-                  >
-                    <Input size="large" placeholder="验证码" />
-                  </FormItem>
-                </Col>
-                <Col span={8}>
-                  <Button
-                    size="large"
-                    disabled={!!count}
-                    className={styles.getCaptcha}
-                    onClick={onGetCaptcha}
-                  >
-                    {count ? `${count} s` : '获取验证码'}
-                  </Button>
-                </Col>
-              </Row>
+
               <ProFormText.Password
                 name="password"
                 fieldProps={{
@@ -217,6 +205,29 @@ const Login: React.FC = () => {
                   },
                 ]}
               />
+              <Row gutter={8}>
+                <Col span={16}>
+                  <FormItem
+                    name="verifyCode"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请输入验证码!',
+                      },
+                    ]}
+                  >
+                    <Input size="large" placeholder="验证码" />
+                  </FormItem>
+                </Col>
+                <Col span={8}>
+                  <div className={styles.yzmacode} onClick={VerificationCode}>
+                    <img src={img} alt="load" />
+                  </div>
+                </Col>
+              </Row>
+
+
+
             </>
           )}
 
@@ -326,3 +337,4 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
