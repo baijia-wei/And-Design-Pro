@@ -16,6 +16,7 @@ import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 
 import styles from './index.less';
 import FormItem from 'antd/lib/form/FormItem';
+import { log } from 'lodash-decorators/utils';
 
 const LoginMessage: React.FC<{
 
@@ -79,7 +80,10 @@ const Login: React.FC = () => {
     try {
       // 登录
       const msg = await login(values);
-      if (msg.status === 'ok') {
+      console.log(msg);
+      
+      if (msg.msg === '登录成功') {
+        document.cookie = name + "="+ msg.data
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
@@ -87,10 +91,8 @@ const Login: React.FC = () => {
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
-        if (!history) return;
-        const { query } = history.location;
-        const { redirect } = query as { redirect: string };
-        history.push(redirect || '/');
+        
+        history.push( '/');
         return;
       }
       

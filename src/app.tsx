@@ -49,6 +49,9 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
+  
+  // console.log(document.cookie);
+  
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
@@ -59,9 +62,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
-      }
+      // if () {
+      //   history.push(loginPath);
+      // }
     },
     links: isDev
       ? [

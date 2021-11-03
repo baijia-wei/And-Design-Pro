@@ -24,6 +24,8 @@ declare namespace API {
   };
 
   type LoginResult = {
+    data?:string;
+    msg?:string;
     status?: string;
     type?: string;
     currentAuthority?: string;
@@ -68,7 +70,7 @@ declare namespace API {
     type?: string;
     verifyKey:string;
     verifyCode:string;
-    
+  
   };
 
   type ErrorResponse = {
