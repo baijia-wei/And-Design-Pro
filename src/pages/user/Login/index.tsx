@@ -32,34 +32,23 @@ const LoginMessage: React.FC<{
 );
 
 const Login: React.FC = () => {
-
-
-
   const [verifyKey, stecode] = useState("");
   const [img, steimg] = useState("")
-
-
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const [type, setType] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
-
   const intl = useIntl();
-
-
 
   useEffect(() => {
     VerificationCode()
-    return () => {
-
-    }
   }, [])
 
   // 点击图片
   const VerificationCode = async () => {
-    const msg=await getgetVerifyCode()
+    const msg = await getgetVerifyCode()
     steimg(msg.data.captcha)
     stecode(msg.data.verify)
-    
+
   }
 
   const fetchUserInfo = async () => {
@@ -72,28 +61,28 @@ const Login: React.FC = () => {
     }
   };
 
+
+
   const handleSubmit = async (values: API.LoginParams) => {
-    values.verifyKey=verifyKey//添加
-    console.log(values);
-    
+    values.verifyKey = verifyKey//添加
     try {
       // 登录
       const msg = await login(values);
-      if (msg.status === 'ok') {
+      if (msg.msg === '登录成功') {
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
         });
+        document.cookie = 'toke=' + msg.data;
+        // document.cookie = name+ "=" + " toke" + ";key=" + msg.data
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
         /** 此方法会跳转到 redirect 参数所在的位置 */
-        if (!history) return;
-        const { query } = history.location;
-        const { redirect } = query as { redirect: string };
-        history.push(redirect || '/');
-        return;
+        history.push('/');
+
+        
       }
-      
+
       // 如果失败去设置用户错误信息
       setUserLoginState(msg);
     } catch (error) {
