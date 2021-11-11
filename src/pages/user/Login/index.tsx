@@ -16,6 +16,7 @@ import { getFakeCaptcha } from '@/services/ant-design-pro/login';
 
 import styles from './index.less';
 import FormItem from 'antd/lib/form/FormItem';
+import { log } from 'lodash-decorators/utils';
 
 const LoginMessage: React.FC<{
 
