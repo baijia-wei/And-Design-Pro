@@ -4,37 +4,35 @@ import { history } from 'umi';
 import { extend } from 'umi-request';
 
 // 获取toke
-function getCookie(name: any) {
-  var prefix = name + "="
-  var start = document.cookie.indexOf(prefix)
+export const getCookie = (name: any) => {
+  var prefix = name + '=';
+  var start = document.cookie.indexOf(prefix);
 
   if (start == -1) {
     return '';
   }
 
-  var end = document.cookie.indexOf(";", start + prefix.length)
+  var end = document.cookie.indexOf(';', start + prefix.length);
   if (end == -1) {
     end = document.cookie.length;
   }
 
-  var value = document.cookie.substring(start + prefix.length, end)
+  var value = document.cookie.substring(start + prefix.length, end);
   return unescape(value);
-}
-if (getCookie("toke") === "") {
+};
+
+if (getCookie('toke') === '') {
   history.push('/');
 }
 const request = extend({
   prefix: 'http://13.245.39.119:2018',
   timeout: 10000,
   headers: {
-    'Access-Control-Request-Headers': 'Bearer ' + getCookie("toke"),
-    "lang": "zh_cn",
+    'Access-Control-Request-Headers': 'Bearer ' + getCookie('toke'),
+    lang: 'zh_cn',
   },
 });
-const requestw = extend({
-
-});
-
+const requestw = extend({});
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
@@ -57,10 +55,8 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   return request<API.LoginResult>('/security/login', {
     method: 'POST',
     params: body,
-    ...(options),
+    ...options,
   });
-
-
 }
 
 /** 此处后端没有提供注释 GET /api/notices */
@@ -115,13 +111,9 @@ export async function removeRule(options?: { [key: string]: any }) {
   });
 }
 
-
-
 /** 删除规则 DELETE /api/rule */
 export async function getgetVerifyCode(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/security/getVerifyCode', {
-    method: "get",
+    method: 'get',
   });
 }
-
-

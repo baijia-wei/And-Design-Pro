@@ -4,7 +4,7 @@ import type { RunTimeLayoutConfig } from 'umi';
 import { history, Link } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { currentUser as queryCurrentUser, getCookie } from './services/ant-design-pro/api';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -49,9 +49,10 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState }) => {
-  
   // console.log(document.cookie);
-  
+  const list = getCookie('toke');
+  console.log(list);
+
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
@@ -62,9 +63,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      // if () {
-      //   history.push(loginPath);
-      // }
+      if (list) {
+        history.push(loginPath);
+      }
     },
     links: isDev
       ? [

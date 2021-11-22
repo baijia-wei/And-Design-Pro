@@ -19,6 +19,7 @@ import type { TimeType } from './components/SalesCard';
 import { getTimeDistance } from './utils/utils';
 import type { AnalysisData } from './data.d';
 import styles from './style.less';
+import InputDatas from './components/Inputdata/inputdata';
 
 type RangePickerValue = RangePickerProps<moment.Moment>['value'];
 
@@ -30,6 +31,19 @@ type AnalysisProps = {
 type SalesType = 'all' | 'online' | 'stores';
 
 const Analysis: FC<AnalysisProps> = () => {
+  const dataswk = [
+    { year: '1990', value: 3 },
+    { year: '1991', value: 1 },
+    { year: '1992', value: 4 },
+    { year: '1993', value: 3.5 },
+    { year: '1994', value: 5 },
+    { year: '1995', value: 4.9 },
+    { year: '1996', value: 6 },
+    { year: '1997', value: 7 },
+    { year: '1998', value: 9 },
+    { year: '1999', value: 13 },
+  ];
+
   const [salesType, setSalesType] = useState<SalesType>('all');
   const [currentTabKey, setCurrentTabKey] = useState<string>('');
   const [rangePickerValue, setRangePickerValue] = useState<RangePickerValue>(
@@ -144,6 +158,7 @@ const Analysis: FC<AnalysisProps> = () => {
             </Suspense>
           </Col>
         </Row>
+
         <Suspense fallback={null}>
           <OfflineData
             activeKey={activeKey}
@@ -152,6 +167,11 @@ const Analysis: FC<AnalysisProps> = () => {
             offlineChartData={data?.offlineChartData || []}
             handleTabChange={handleTabChange}
           />
+        </Suspense>
+
+        {/* 折线表 */}
+        <Suspense fallback={null}>
+          <InputDatas offlineChartData={dataswk} />
         </Suspense>
       </>
     </GridContent>
